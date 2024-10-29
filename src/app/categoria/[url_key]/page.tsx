@@ -31,14 +31,18 @@ interface Category {
 }
 
 export default async function CategoryPage({
-  params,
-  searchParams,
+  params: rawParams,
+  searchParams: rawSearchParams,
 }: {
-  params: { url_key: string };
-  searchParams: { page?: string };
+  params: Promise<{ url_key: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const client = createApolloClient();
-  const currentPage = parseInt((await searchParams.page) || '1', 10); // Usa `await` para obter `searchParams.page`
+
+  // Aguarde os parâmetros para extrair seus valores
+  const params = await rawParams;
+  const searchParams = await rawSearchParams;
+  const currentPage = parseInt(searchParams.page || '1', 10);
   const itemsPerPage = 12;
 
   try {
